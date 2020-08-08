@@ -1,5 +1,6 @@
 const loader = document.getElementById('loader')
 const quoteContainer = document.getElementById('quote-container')
+const quoteContent = document.getElementById('quote-content')
 const quoteText = document.getElementById('quote')
 const authorText = document.getElementById('author')
 const twitterButton = document.getElementById('twitter')
@@ -8,8 +9,10 @@ const newQuoteButton = document.getElementById('new-quote')
 // Used for making sure that the script will only attempt to fetch a quote 10 times
 let errors = 0
 
-async function getQuoteFromApi() {
-    showLoading()
+async function getQuoteFromApi(toggleInitialLoading = true) {
+    if (toggleInitialLoading) {
+        toggleLoading()
+    }
 
     // We need to use a Proxy URL to make our API call in order to avoid CORS issue
     const proxyUrl = 'https://cors-anywhere.herokuapp.com/'
@@ -29,10 +32,10 @@ async function getQuoteFromApi() {
             quoteText.classList.remove('long-quote')
         }
 
-        hideLoading()
+        toggleLoading()
     } catch (e) {
-        if (errors < 10) {
-            getQuoteFromApi()
+        if (errors < 20) {
+            getQuoteFromApi(false)
 
             errors++
         }
@@ -40,27 +43,30 @@ async function getQuoteFromApi() {
 }
 
 function tweetQuote() {
-    const quote = quoteText.innerText
-    const author = authorText.innerText
-    const twitterUrl = `https://twitter.com/intent/tweet?text=${quote} - ${author}`
+    if (!quoteContainer.classList.contains('loading')) {
+        const quote = quoteText.innerText
+        const author = authorText.innerText
+        const twitterUrl = `https://twitter.com/intent/tweet?text=${quote} - ${author}`
 
-    window.open(twitterUrl, '_blank')
+        window.open(twitterUrl, '_blank')
+    }
 }
 
-function showLoading() {
-    loader.hidden = false
-    quoteContainer.hidden = true
-}
-
-function hideLoading() {
-    if (!loader.hidden) {
-        quoteContainer.hidden = false
-        loader.hidden = true
+function toggleLoading() {
+    if (quoteContainer.classList.contains('loading')) {
+        quoteContainer.classList.remove('loading')
+    } else {
+        quoteContainer.classList.add('loading')
     }
 }
 
 // Event Listeners
-newQuoteButton.addEventListener('click', getQuoteFromApi)
+newQuoteButton.addEventListener('click', () => {
+    if (!quoteContainer.classList.contains('loading')) {
+        getQuoteFromApi()
+    }
+})
+
 twitterButton.addEventListener('click', tweetQuote)
 
 // On Load

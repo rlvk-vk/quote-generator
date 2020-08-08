@@ -5,6 +5,7 @@
     --green: #1abc9c;
     --white: #fafafa;
     --twitter-color: #38a1f3;
+    --grey: #cccccc;
 }
 
 * {
@@ -31,10 +32,18 @@ body {
     background-color: rgba(255, 255, 255, 0.4);
     border-radius: 10px;
     box-shadow: 0 10px 10px 10px rgba(0, 0, 0, 0.2);
+    width: 100%;
     max-width: 900px;
     padding: 20px;
     text-align: center;
-    width: auto;
+}
+
+#quote-container.loading #quote-content {
+    display: none;
+}
+
+#quote-container.loading #loader {
+    display: block;
 }
 
 .quote-text {
@@ -100,13 +109,32 @@ body {
     color: var(--twitter-color);
 }
 
+#quote-container.loading .button-container button {
+    color: var(--white);
+    background-color: var(--grey);
+    cursor: not-allowed;
+}
+
+#quote-container.loading .button-container button:hover {
+    color: var(--white);
+    background-color: var(--grey);
+    cursor: not-allowed;
+    border: 3px solid var(--grey);
+}
+
+#quote-container.loading .button-container button:hover i {
+    color: var(--white);
+}
+
 #loader {
+    display: none;
     border: 8px solid var(--white);
     border-top: 8px solid var(--green);
     border-radius: 50%;
     width: 120px;
     height: 120px;
     animation: spin 1.5s linear infinite;
+    margin: 20px auto;
 }
 
 @keyframes spin {
